@@ -1155,7 +1155,7 @@ struct HTTP2FrameDecoder {
             }
         } catch is IgnoredFrame {
             return nil
-        } catch _ as NIOHPACKError {
+        } catch is any NIOHPACKError {
             // convert into a connection error of type COMPRESSION_ERROR
             throw InternalError.codecError(code: .compressionError)
         }
@@ -1554,9 +1554,6 @@ struct FrameFlags: OptionSet, CustomStringConvertible {
     /// PRIORITY flag. Valid on HEADERS frames, specifically as the first frame sent
     /// on a new stream.
     internal static let priority = FrameFlags(rawValue: 0x20)
-
-    // useful for test cases
-    internal static var allFlags: FrameFlags = [.endStream, .endHeaders, .padded, .priority]
 
     internal var description: String {
         var strings: [String] = []
